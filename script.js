@@ -1,5 +1,3 @@
-
-
 const $ = (sel, root=document) => root.querySelector(sel);
 const $$ = (sel, root=document) => [...root.querySelectorAll(sel)];
 const live = msg => { const r = $('#liveRegion'); if (r) { r.textContent = msg; } };
@@ -21,7 +19,7 @@ const state = {
   conversas: {}, // {doacaoId: [{quem:'you'|'them', texto, ts}]}
   user: { id: 'beneficiario-demo', nome: 'Você' },
   plano: localStorage.getItem('plano') || 'free',
-  a11y: JSON.parse(localStorage.getItem('a11y')||'{}')
+  a11y: JSON.parse(localStorage.getItem('a11y')||'{"fonte":1}')
 };
 
 // Utilidades
@@ -38,14 +36,25 @@ const haversine = (a, b) => {
 // Acessibilidade
 function applyA11y() {
   const b = document.body; const a = state.a11y;
+
   b.classList.toggle('hc', !!a.contraste);
-  b.classList.toggle('lg', !!a.fonte);
   b.classList.toggle('df', !!a.dislexia);
-  if (a.animacoes) b.setAttribute('data-reduced-motion','true'); else b.removeAttribute('data-reduced-motion');
+
+  if (a.animacoes) b.setAttribute('data-reduced-motion','true'); 
+  else b.removeAttribute('data-reduced-motion');
+
+  // Fonte dinâmica
+  if (!a.fonte) a.fonte = 1; 
+  document.documentElement.style.fontSize = (a.fonte * 100) + "%";
+
+  // Painel
   $('#painelA11y').classList.toggle('open', !!a.open);
   $('#btnA11y').setAttribute('aria-expanded', !!a.open);
 }
-function saveA11y() { localStorage.setItem('a11y', JSON.stringify(state.a11y)); applyA11y(); }
+function saveA11y() { 
+  localStorage.setItem('a11y', JSON.stringify(state.a11y)); 
+  applyA11y(); 
+}
 
 // Renderizações
 function renderStats() {
@@ -113,14 +122,13 @@ function renderRanking() {
 function drawMap(userPos=null) {
   const c = $('#miniMapa'); if (!c) return; const ctx = c.getContext('2d');
   ctx.clearRect(0,0,c.width,c.height);
-  // fundo
   ctx.fillStyle = '#0b1220'; ctx.fillRect(0,0,c.width,c.height);
-  ctx.strokeStyle = '#233'; ctx.lineWidth = 1; for (let x=0;x<c.width;x+=50){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,c.height); ctx.stroke(); } for (let y=0;y<c.height;y+=50){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(c.width,y); ctx.stroke(); }
-  // pontos (fake layout)
+  ctx.strokeStyle = '#233'; ctx.lineWidth = 1; 
+  for (let x=0;x<c.width;x+=50){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,c.height); ctx.stroke(); } 
+  for (let y=0;y<c.height;y+=50){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(c.width,y); ctx.stroke(); }
   const spots = [ [100,80], [320,160], [220,260] ];
   const colors = ['#22c55e','#22c55e','#22c55e'];
   spots.forEach(([x,y],i)=>{ ctx.beginPath(); ctx.fillStyle = colors[i]; ctx.arc(x,y,8,0,Math.PI*2); ctx.fill(); });
-  // usuário
   if (userPos) { ctx.beginPath(); ctx.fillStyle = '#93c5fd'; ctx.arc(420,60,10,0,Math.PI*2); ctx.fill(); }
 }
 
@@ -158,7 +166,7 @@ function renderChat() {
 function onSubmitDoacao(e){
   e.preventDefault();
   const fd = new FormData(e.target);
-  const est = state.estabelecimentos[0]; // simulando usuário logado como padaria
+  const est = state.estabelecimentos[0];
   const d = {
     id: crypto.randomUUID(),
     estId: est.id,
@@ -184,12 +192,9 @@ function onClickLista(e){
   const d = state.doacoes.find(x=>x.id===id);
   if (!d || d.status!=='disponível') return;
   d.status='reservado'; d.reservadoPor = state.user.id; state.reservas.unshift(d);
-  // pontos p/ estabelecimento
   const est = byId(d.estId); est.pontos += 3;
-  // cria conversa
   ensureConversation(d.id);
   state.conversas[d.id].push({quem:'you', texto:`Olá! Reservei "${d.tipo}". Posso retirar dentro da janela ${d.janela}?`, ts: Date.now()});
-  // resposta automática
   setTimeout(()=>{ state.conversas[d.id].push({quem:'them', texto:'Olá! Está reservado no balcão. Traga um documento, por favor.', ts: Date.now()}); renderChat(); }, 500);
 
   live('Doação reservada');
@@ -219,14 +224,24 @@ function wireNav(){
 function setupA11y(){
   $('#btnA11y').addEventListener('click', ()=>{ state.a11y.open = !state.a11y.open; saveA11y(); });
   $('#toggleContraste').addEventListener('click', ()=>{ state.a11y.contraste = !state.a11y.contraste; saveA11y(); });
-  $('#toggleFonte').addEventListener('click', ()=>{ state.a11y.fonte = !state.a11y.fonte; saveA11y(); });
   $('#toggleDislexia').addEventListener('click', ()=>{ state.a11y.dislexia = !state.a11y.dislexia; saveA11y(); });
   $('#toggleAnimacoes').addEventListener('click', ()=>{ state.a11y.animacoes = !state.a11y.animacoes; saveA11y(); });
-  $('#resetA11y').addEventListener('click', ()=>{ state.a11y = {}; saveA11y(); });
+  $('#resetA11y').addEventListener('click', ()=>{ state.a11y = {fonte:1}; saveA11y(); });
+
+  // Novos botões de fonte
+  $('#aumentarFonte').addEventListener('click', ()=>{
+    state.a11y.fonte = Math.min((state.a11y.fonte||1) + 0.1, 2); 
+    saveA11y();
+  });
+  $('#diminuirFonte').addEventListener('click', ()=>{
+    state.a11y.fonte = Math.max((state.a11y.fonte||1) - 0.1, 0.7); 
+    saveA11y();
+  });
+
   applyA11y();
 }
 
-// Localização (simples)
+// Localização
 function localizar(){
   const status = $('#locStatus');
   if (!navigator.geolocation) { status.textContent = 'Geolocalização não suportada.'; return; }
@@ -234,14 +249,13 @@ function localizar(){
   navigator.geolocation.getCurrentPosition(pos=>{
     status.textContent = 'Localização obtida.';
     drawMap({lat: pos.coords.latitude, lng: pos.coords.longitude});
-    // ordenar por distância (aproximação)
     const you = {lat: pos.coords.latitude, lng: pos.coords.longitude};
     const ordered = [...state.doacoes].sort((a,b)=>haversine(you,a)-haversine(you,b));
     renderDoacoes(ordered);
   }, err=>{ status.textContent = 'Não foi possível obter a localização.'; drawMap(null); });
 }
 
-// Assinatura (compra)
+// Assinatura
 function openModal(){ $('#modalCompra').classList.add('open'); $('#modalCompra').setAttribute('aria-hidden','false'); }
 function closeModal(){ $('#modalCompra').classList.remove('open'); $('#modalCompra').setAttribute('aria-hidden','true'); }
 function confirmarCompra(){ state.plano = 'plus'; localStorage.setItem('plano','plus'); $('#statusPlano').textContent = '🎉 Assinatura ativada! Obrigado por apoiar a causa.'; live('Assinatura confirmada'); closeModal(); }
@@ -253,7 +267,7 @@ function wirePlanButtons(){
   $('#cancelarCompra').addEventListener('click', closeModal);
 }
 
-// Filtro de texto
+// Filtro
 $('#filtroTexto')?.addEventListener('input', ()=> renderDoacoes());
 
 // Listeners globais
@@ -268,5 +282,4 @@ function init(){
   wireNav(); setupA11y(); wirePlanButtons(); drawMap(null);
   renderStats(); renderDoacoes(); renderHistorico(); renderRanking(); renderConversations();
 }
-
 document.addEventListener('DOMContentLoaded', init);

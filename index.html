@@ -37,16 +37,17 @@
     </div>
   </header>
 
-  <!-- Painel de acessibilidade -->
+  <!-- Painel de acessibilidade atualizado -->
   <aside id="painelA11y" class="a11y-panel" aria-hidden="true">
     <div class="container">
       <h2 class="h4">Acessibilidade</h2>
-      <div class="a11y-controls">
-        <button class="btn small" id="toggleContraste">Alto contraste</button>
-        <button class="btn small" id="toggleFonte">Aumentar fonte</button>
-        <button class="btn small" id="toggleDislexia">Fonte legível</button>
-        <button class="btn small" id="toggleAnimacoes">Reduzir animações</button>
-        <button class="btn small" id="resetA11y">Redefinir</button>
+      <div class="a11y-controls grid3">
+        <button class="btn small" id="aumentarFonte" title="Aumentar tamanho da fonte">A+</button>
+        <button class="btn small" id="diminuirFonte" title="Diminuir tamanho da fonte">A-</button>
+        <button class="btn small" id="toggleContraste" title="Ativar/Desativar alto contraste">Contraste</button>
+        <button class="btn small" id="toggleDislexia" title="Fonte legível para dislexia">Fonte Dislexia</button>
+        <button class="btn small" id="toggleAnimacoes" title="Reduzir animações">Reduzir Animações</button>
+        <button class="btn small" id="resetA11y" title="Restaurar configurações padrão">Resetar</button>
       </div>
       <p class="muted">Suas preferências ficam salvas neste navegador.</p>
     </div>
@@ -260,3 +261,4 @@
   <script src="script.js" defer></script>
 </body>
 </html>
+
