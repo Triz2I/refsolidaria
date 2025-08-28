@@ -137,6 +137,17 @@ h1, h2, h3, .h4, .h5 {
   letter-spacing: 0.5px;
 }
 
+/* Título principal chamativo */
+.title-hero {
+  font-size: 3rem;
+  font-weight: 900;
+  background: linear-gradient(90deg, #ff6f00, #ffd166, #ff922b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.15);
+  letter-spacing: 1px;
+}
+
 /* Botões mais modernos */
 .btn { transition: all 0.2s ease; font-weight: 600; }
 .btn:hover { filter: brightness(1.15); transform: translateY(-3px) scale(1.02); }
@@ -148,4 +159,5 @@ h1, h2, h3, .h4, .h5 {
 .nav-link { font-weight: 600; transition: all 0.2s ease; }
 .nav-link:hover { background: rgba(185, 112, 1, 0.08); border-color: var(--secondary); color: var(--secondary); }
 .nav-link.active { background: var(--secondary); color: #8b5b00; font-weight: 700; }
+
 
