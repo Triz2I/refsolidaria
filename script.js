@@ -204,10 +204,16 @@ function onChatSubmit(e){
 }
 
 function wireNav(){
-  $$('.nav-link').forEach(b=> b.addEventListener('click', ()=>{
-    const go = b.getAttribute('data-goto'); if (go) $(go).scrollIntoView({behavior: 'smooth'});
-  }));
-  $('#btnInicio').addEventListener('click', ()=> $('#hero').scrollIntoView({behavior:'smooth'}));
+  $$('.nav-link').forEach(b=> {
+    b.addEventListener('click', ()=>{
+      const go = b.getAttribute('data-goto');
+      if (go && $(go)) {
+        $(go).scrollIntoView({behavior: 'smooth'});
+        $$('.nav-link').forEach(x=> x.classList.remove('active'));
+        b.classList.add('active');
+      }
+    });
+  });
 }
 
 function setupA11y(){
