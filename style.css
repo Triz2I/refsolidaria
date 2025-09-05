@@ -131,7 +131,7 @@ body {
 /* TÍTULOS com maior contraste */
 h1, h2, h3, .h4, .h5 {
   font-weight: 800;
-  background: linear-gradient(90deg, #ff6f00, #ffca28); /* laranja forte para amarelo ouro */
+  background: linear-gradient(90deg, #241103, #a51a02);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: 0.5px;
@@ -141,7 +141,7 @@ h1, h2, h3, .h4, .h5 {
 .title-hero {
   font-size: 3rem;
   font-weight: 900;
-  background: linear-gradient(90deg, #ff6f00, #ffd166, #ff922b);
+  background: linear-gradient(90deg, #201003, #ec612b, #5a2506);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 2px 2px 6px rgba(0,0,0,0.15);
