@@ -12,11 +12,31 @@
 }
 
 /* alto contraste */
-.hc { --bg:#000; --surface:#000; --text:#fff; --muted:#e5e7eb; --primary:#ffd400; --secondary:#00bcd4; }
-/* fonte grande */
-.lg { font-size: 18px; }
+.hc {
+  --bg:#000;
+  --surface:#000;
+  --text:#fff;
+  --muted:#e5e7eb;
+  --primary:#ffd400;
+  --secondary:#00bcd4;
+}
+
 /* fonte legível */
-.df { font-family: "Atkinson Hyperlegible", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+.df {
+  font-family: "Atkinson Hyperlegible", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+/* reduzir animações */
+.ra * {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* ajuste dinâmico de fonte (JS aplica transform: scale) */
+html {
+  transform-origin: top left;
+  transition: transform 0.2s ease;
+}
 
 html, body { height: 100%; }
 body {
@@ -124,5 +144,3 @@ body {
 .bullets { list-style: none; padding:0; display:grid; gap:6px; }
 .mini { margin:0; padding-left: 18px; color: var(--muted); }
 .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
-```
-
