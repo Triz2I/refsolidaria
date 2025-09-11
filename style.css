@@ -1,19 +1,19 @@
 :root {
-  --bg: #fffdf8;       /* fundo claro */
-  --surface: #f5e6d3;  /* areia clara */
-  --text: #2e2a26;     /* texto escuro */
-  --muted: #8a7f73;    /* cinza quente */
+  --bg: #fffdf6;        /* creme claro */
+  --surface: #faf3e7;   /* bege suave */
+  --text: #2c2a28;      /* texto escuro */
+  --muted: #7a726a;     /* cinza quente */
 
-  --primary: #d87a42;      /* terracota */
-  --primary-700: #b55e2c;  /* cobre queimado */
+  --primary: #4a8f46;       /* verde fresco */
+  --primary-700: #356d34;   /* verde mais escuro */
 
-  --secondary: #f4c95d;    /* dourado suave */
-  --ring: #e9b949;         /* âmbar */
+  --secondary: #f2c14e;     /* dourado trigo */
+  --ring: #e0a82e;          /* âmbar */
 
-  --accent: #6b8e23;       /* verde oliva */
-  --danger: #e74c3c;
+  --accent: #b23a48;        /* vermelho vinho */
+  --danger: #e63946;        /* vermelho vivo para alertas */
 
-  --shadow: 0 10px 30px rgba(0,0,0,.12);
+  --shadow: 0 10px 30px rgba(0,0,0,.1);
 }
 
 /* TÍTULOS com maior contraste */
@@ -29,7 +29,7 @@ h1, h2, h3, .h4, .h5 {
 .title-hero {
   font-size: 3rem;
   font-weight: 900;
-  background: linear-gradient(90deg, var(--accent), var(--primary), var(--secondary));
+  background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 2px 2px 6px rgba(0,0,0,0.15);
@@ -42,21 +42,22 @@ h1, h2, h3, .h4, .h5 {
   color: #fff; 
 }
 .btn.secondary { 
-  background: var(--accent); 
-  border-color:#4a6a1f; 
-  color:#fff; 
+  background: var(--secondary); 
+  border-color:#c99a1a; 
+  color:#4a3b0a; 
+  font-weight: 600;
 }
-.btn.secondary:hover { background: #587d2a; }
+.btn.secondary:hover { background: #d4a52d; }
 .btn.ghost { 
   background: transparent; 
   border-color: var(--primary); 
   color: var(--primary); 
 }
-.btn.ghost:hover { background: rgba(216, 122, 66, 0.1); }
+.btn.ghost:hover { background: rgba(74, 143, 70, 0.1); }
 
 /* Navegação com destaque */
 .nav-link:hover { 
-  background: rgba(107, 142, 35, 0.15); 
+  background: rgba(178, 58, 72, 0.15); 
   border-color: var(--accent); 
   color: var(--accent); 
 }
@@ -91,11 +92,8 @@ h1, h2, h3, .h4, .h5 {
   padding:2px 8px; 
   border-radius:999px; 
   background: var(--accent); 
-  border:1px solid #4a6a1f; 
+  border:1px solid #8e2b3a; 
   color:#fff; 
   font-size:.8rem; 
 }
-
-
-
 
