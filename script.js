@@ -1,4 +1,3 @@
-// Atalhos DOM
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 const live = msg => {
@@ -8,7 +7,6 @@ const live = msg => {
   }
 };
 
-// Estado
 const state = {
   estabelecimentos: [
     { id: 'padaria-alegria', nome: 'Padaria Alegria', pontos: 12, endereco: 'Rua das Flores, 120 - Centro, São Paulo', lat: -23.55, lng: -46.63 },
@@ -28,7 +26,6 @@ const state = {
   a11y: JSON.parse(localStorage.getItem('a11y') || '{}')
 };
 
-// Utilidades
 const byId = id => state.estabelecimentos.find(e => e.id === id);
 const formatHora = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 const haversine = (a, b) => {
@@ -40,7 +37,6 @@ const haversine = (a, b) => {
   return 2 * R * Math.asin(Math.sqrt(h));
 };
 
-// Acessibilidade
 function applyA11y() {
   const b = document.body;
   const a = state.a11y;
@@ -56,7 +52,6 @@ function saveA11y() {
   applyA11y();
 }
 
-// Renderizações
 function renderStats() {
   $('#countDoacoes').textContent = state.doacoes.length;
   $('#countRefeicoes').textContent = state.doacoes.reduce((a, d) => a + Number(d.qtd || 0), 0);
@@ -122,13 +117,12 @@ function renderRanking() {
   }
 }
 
-// Mini mapa simples no canvas
 function drawMap(userPos = null) {
   const c = $('#miniMapa');
   if (!c) return;
   const ctx = c.getContext('2d');
   ctx.clearRect(0, 0, c.width, c.height);
-  // fundo
+  
   ctx.fillStyle = '#0b1220';
   ctx.fillRect(0, 0, c.width, c.height);
   ctx.strokeStyle = '#233';
@@ -139,17 +133,16 @@ function drawMap(userPos = null) {
   for (let y = 0; y < c.height; y += 50) {
     ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(c.width, y); ctx.stroke();
   }
-  // pontos (fake layout)
+
   const spots = [[100, 80], [320, 160], [220, 260]];
   const colors = ['#22c55e', '#22c55e', '#22c55e'];
   spots.forEach(([x, y], i) => { ctx.beginPath(); ctx.fillStyle = colors[i]; ctx.arc(x, y, 8, 0, Math.PI * 2); ctx.fill(); });
-  // usuário
+ 
   if (userPos) {
     ctx.beginPath(); ctx.fillStyle = '#93c5fd'; ctx.arc(420, 60, 10, 0, Math.PI * 2); ctx.fill();
   }
 }
 
-// Chat
 function ensureConversation(doacaoId) {
   if (!state.conversas[doacaoId]) state.conversas[doacaoId] = [];
 }
@@ -186,11 +179,11 @@ function renderChat() {
   box.scrollTop = box.scrollHeight;
 }
 
-// Eventos
+
 function onSubmitDoacao(e) {
   e.preventDefault();
   const fd = new FormData(e.target);
-  const est = state.estabelecimentos[0]; // simulando usuário logado como padaria
+  const est = state.estabelecimentos[0];
   const d = {
     id: crypto.randomUUID(),
     estId: est.id,
@@ -222,13 +215,13 @@ function onClickLista(e) {
   d.status = 'reservado';
   d.reservadoPor = state.user.id;
   state.reservas.unshift(d);
-  // pontos p/ estabelecimento
+
   const est = byId(d.estId);
   est.pontos += 3;
-  // cria conversa
+  
   ensureConversation(d.id);
   state.conversas[d.id].push({ quem: 'you', texto: `Olá! Reservei "${d.tipo}". Posso retirar dentro da janela ${d.janela}?`, ts: Date.now() });
-  // resposta automática
+  
   setTimeout(() => {
     state.conversas[d.id].push({ quem: 'them', texto: 'Olá! Está reservado no balcão. Traga um documento, por favor.', ts: Date.now() });
     renderChat();
@@ -270,7 +263,6 @@ function setupA11y() {
   applyA11y();
 }
 
-// Localização (simples)
 function localizar() {
   const status = $('#locStatus');
   if (!navigator.geolocation) { status.textContent = 'Geolocalização não suportada.'; return; }
@@ -278,7 +270,6 @@ function localizar() {
   navigator.geolocation.getCurrentPosition(pos => {
     status.textContent = 'Localização obtida.';
     drawMap({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-    // ordenar por distância (aproximação)
     const you = { lat: pos.coords.latitude, lng: pos.coords.longitude };
     const ordered = [...state.doacoes].sort((a, b) => haversine(you, a) - haversine(you, b));
     renderDoacoes(ordered);
@@ -288,7 +279,6 @@ function localizar() {
   });
 }
 
-// Assinatura (compra)
 function openModal() {
   $('#modalCompra').classList.add('open');
   $('#modalCompra').setAttribute('aria-hidden', 'false');
@@ -312,17 +302,14 @@ function wirePlanButtons() {
   $('#cancelarCompra').addEventListener('click', closeModal);
 }
 
-// Filtro de texto
 $('#filtroTexto')?.addEventListener('input', () => renderDoacoes());
 
-// Listeners globais
 $('#formDoacao')?.addEventListener('submit', onSubmitDoacao);
 $('#listaDoacoes')?.addEventListener('click', onClickLista);
 $('#formChat')?.addEventListener('submit', onChatSubmit);
 $('#selConversa')?.addEventListener('change', renderChat);
 $('#btnLocalizar')?.addEventListener('click', localizar);
 
-// Init
 function init() {
   wireNav();
   setupA11y();
