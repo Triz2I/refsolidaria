@@ -3,8 +3,8 @@
   --surface: #161a22;
   --text: #f5f7fb;
   --muted: #a0a8b8;
-  --primary: #22c55e;
-  --primary-700: #16a34a;
+  --primary: #fa3e04;
+  --primary-700: #ff5e00;
   --secondary: #2dd4bf;
   --ring: #93c5fd;
   --danger: #ef4444;
@@ -16,7 +16,7 @@
   --surface:#000;
   --text:#fff;
   --muted:#e5e7eb;
-  --primary:#ff0000;
+  --primary:#ff5e00;
   --secondary:#00bcd4;
 }
 
