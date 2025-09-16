@@ -2,9 +2,7 @@ const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 const live = msg => {
   const r = $('#liveRegion');
-  if (r) {
-    r.textContent = msg;
-  }
+  if (r) r.textContent = msg;
 };
 
 const state = {
@@ -37,6 +35,7 @@ const haversine = (a, b) => {
   return 2 * R * Math.asin(Math.sqrt(h));
 };
 
+// ----- Acessibilidade -----
 function applyA11y() {
   const b = document.body;
   const a = state.a11y;
@@ -44,28 +43,31 @@ function applyA11y() {
   b.classList.toggle('lg', !!a.fonte);
   b.classList.toggle('df', !!a.dislexia);
   if (a.animacoes) b.setAttribute('data-reduced-motion', 'true'); else b.removeAttribute('data-reduced-motion');
-  $('#painelA11y').classList.toggle('open', !!a.open);
-  $('#btnA11y').setAttribute('aria-expanded', !!a.open);
+  $('#painelA11y')?.classList.toggle('open', !!a.open);
+  $('#btnA11y')?.setAttribute('aria-expanded', !!a.open);
 }
 function saveA11y() {
   localStorage.setItem('a11y', JSON.stringify(state.a11y));
   applyA11y();
 }
 
+// ----- Estatísticas -----
 function renderStats() {
   $('#countDoacoes').textContent = state.doacoes.length;
   $('#countRefeicoes').textContent = state.doacoes.reduce((a, d) => a + Number(d.qtd || 0), 0);
   $('#countEstabelecimentos').textContent = state.estabelecimentos.length;
 }
 
+// ----- Doações -----
 function renderDoacoes(lista = state.doacoes) {
   const ul = $('#listaDoacoes');
+  if (!ul) return;
   ul.innerHTML = '';
-  const filtro = $('#filtroTexto').value.toLowerCase();
+  const filtro = $('#filtroTexto')?.value.toLowerCase() || '';
   const items = lista.filter(d => [d.tipo, d.endereco, byId(d.estId)?.nome].join(' ').toLowerCase().includes(filtro));
   if (!items.length) ul.innerHTML = '<li>Nenhuma doação encontrada.</li>';
   for (const d of items) {
-    const est = byId(d.estId);
+    const est = byId(d.estId) || { nome: 'Estabelecimento' };
     const li = document.createElement('li');
     li.innerHTML = `
       <div class="row">
@@ -84,29 +86,36 @@ function renderDoacoes(lista = state.doacoes) {
   }
 }
 
+// ----- Histórico -----
 function renderHistorico() {
   const r = $('#listaReservas');
-  r.innerHTML = '';
-  for (const h of state.reservas) {
-    const est = byId(h.estId);
-    const li = document.createElement('li');
-    li.innerHTML = `<div class="row"><strong>${h.tipo}</strong><span class="badge">${h.qtd} un.</span></div>
-      <div class="row"><span>${est.nome} · ${h.endereco}</span><span>Status: ${h.status}</span></div>`;
-    r.appendChild(li);
+  if (r) {
+    r.innerHTML = '';
+    for (const h of state.reservas) {
+      const est = byId(h.estId) || { nome: 'Estabelecimento' };
+      const li = document.createElement('li');
+      li.innerHTML = `<div class="row"><strong>${h.tipo}</strong><span class="badge">${h.qtd} un.</span></div>
+        <div class="row"><span>${est.nome} · ${h.endereco}</span><span>Status: ${h.status}</span></div>`;
+      r.appendChild(li);
+    }
   }
   const p = $('#listaPublicadas');
-  p.innerHTML = '';
-  for (const h of state.publicadas) {
-    const est = byId(h.estId);
-    const li = document.createElement('li');
-    li.innerHTML = `<div class="row"><strong>${h.tipo}</strong><span class="badge">${h.qtd} un.</span></div>
-      <div class="row"><span>${est.nome} · ${h.endereco}</span><span>Status: ${h.status}</span></div>`;
-    p.appendChild(li);
+  if (p) {
+    p.innerHTML = '';
+    for (const h of state.publicadas) {
+      const est = byId(h.estId) || { nome: 'Estabelecimento' };
+      const li = document.createElement('li');
+      li.innerHTML = `<div class="row"><strong>${h.tipo}</strong><span class="badge">${h.qtd} un.</span></div>
+        <div class="row"><span>${est.nome} · ${h.endereco}</span><span>Status: ${h.status}</span></div>`;
+      p.appendChild(li);
+    }
   }
 }
 
+// ----- Ranking -----
 function renderRanking() {
   const ol = $('#listaRanking');
+  if (!ol) return;
   ol.innerHTML = '';
   const rank = [...state.estabelecimentos].sort((a, b) => b.pontos - a.pontos);
   for (const e of rank) {
@@ -117,6 +126,7 @@ function renderRanking() {
   }
 }
 
+// ----- MiniMapa -----
 function drawMap(userPos = null) {
   const c = $('#miniMapa');
   if (!c) return;
@@ -135,19 +145,20 @@ function drawMap(userPos = null) {
   }
 
   const spots = [[100, 80], [320, 160], [220, 260]];
-  const colors = ['#22c55e', '#22c55e', '#22c55e'];
-  spots.forEach(([x, y], i) => { ctx.beginPath(); ctx.fillStyle = colors[i]; ctx.arc(x, y, 8, 0, Math.PI * 2); ctx.fill(); });
+  spots.forEach(([x, y]) => { ctx.beginPath(); ctx.fillStyle = '#22c55e'; ctx.arc(x, y, 8, 0, Math.PI * 2); ctx.fill(); });
  
   if (userPos) {
     ctx.beginPath(); ctx.fillStyle = '#93c5fd'; ctx.arc(420, 60, 10, 0, Math.PI * 2); ctx.fill();
   }
 }
 
+// ----- Conversas -----
 function ensureConversation(doacaoId) {
   if (!state.conversas[doacaoId]) state.conversas[doacaoId] = [];
 }
 function renderConversations() {
   const sel = $('#selConversa');
+  if (!sel) return;
   const options = Object.keys(state.conversas);
   sel.innerHTML = '';
   if (!options.length) {
@@ -166,8 +177,9 @@ function renderConversations() {
   renderChat();
 }
 function renderChat() {
-  const id = $('#selConversa').value;
+  const id = $('#selConversa')?.value;
   const box = $('#chatJanela');
+  if (!id || !box) return;
   box.innerHTML = '';
   const msgs = state.conversas[id] || [];
   for (const m of msgs) {
@@ -179,7 +191,7 @@ function renderChat() {
   box.scrollTop = box.scrollHeight;
 }
 
-
+// ----- Eventos principais -----
 function onSubmitDoacao(e) {
   e.preventDefault();
   const fd = new FormData(e.target);
@@ -217,7 +229,7 @@ function onClickLista(e) {
   state.reservas.unshift(d);
 
   const est = byId(d.estId);
-  est.pontos += 3;
+  if (est) est.pontos += 3;
   
   ensureConversation(d.id);
   state.conversas[d.id].push({ quem: 'you', texto: `Olá! Reservei "${d.tipo}". Posso retirar dentro da janela ${d.janela}?`, ts: Date.now() });
@@ -236,8 +248,8 @@ function onClickLista(e) {
 
 function onChatSubmit(e) {
   e.preventDefault();
-  const id = $('#selConversa').value;
-  if (!state.conversas[id]) return;
+  const id = $('#selConversa')?.value;
+  if (!id || !state.conversas[id]) return;
   const txt = $('#chatMsg').value.trim();
   if (!txt) return;
   $('#chatMsg').value = '';
@@ -245,26 +257,28 @@ function onChatSubmit(e) {
   renderChat();
 }
 
+// ----- Navegação e A11y -----
 function wireNav() {
   $$('.nav-link').forEach(b => b.addEventListener('click', () => {
     const go = b.getAttribute('data-goto');
-    if (go) $(go).scrollIntoView({ behavior: 'smooth' });
+    if (go) $(go)?.scrollIntoView({ behavior: 'smooth' });
   }));
-  $('#btnInicio').addEventListener('click', () => $('#hero').scrollIntoView({ behavior: 'smooth' }));
+  $('#btnInicio')?.addEventListener('click', () => $('#hero')?.scrollIntoView({ behavior: 'smooth' }));
 }
-
 function setupA11y() {
-  $('#btnA11y').addEventListener('click', () => { state.a11y.open = !state.a11y.open; saveA11y(); });
-  $('#toggleContraste').addEventListener('click', () => { state.a11y.contraste = !state.a11y.contraste; saveA11y(); });
-  $('#toggleFonte').addEventListener('click', () => { state.a11y.fonte = !state.a11y.fonte; saveA11y(); });
-  $('#toggleDislexia').addEventListener('click', () => { state.a11y.dislexia = !state.a11y.dislexia; saveA11y(); });
-  $('#toggleAnimacoes').addEventListener('click', () => { state.a11y.animacoes = !state.a11y.animacoes; saveA11y(); });
-  $('#resetA11y').addEventListener('click', () => { state.a11y = {}; saveA11y(); });
+  $('#btnA11y')?.addEventListener('click', () => { state.a11y.open = !state.a11y.open; saveA11y(); });
+  $('#toggleContraste')?.addEventListener('click', () => { state.a11y.contraste = !state.a11y.contraste; saveA11y(); });
+  $('#toggleFonte')?.addEventListener('click', () => { state.a11y.fonte = !state.a11y.fonte; saveA11y(); });
+  $('#toggleDislexia')?.addEventListener('click', () => { state.a11y.dislexia = !state.a11y.dislexia; saveA11y(); });
+  $('#toggleAnimacoes')?.addEventListener('click', () => { state.a11y.animacoes = !state.a11y.animacoes; saveA11y(); });
+  $('#resetA11y')?.addEventListener('click', () => { state.a11y = {}; saveA11y(); });
   applyA11y();
 }
 
+// ----- Geolocalização -----
 function localizar() {
   const status = $('#locStatus');
+  if (!status) return;
   if (!navigator.geolocation) { status.textContent = 'Geolocalização não suportada.'; return; }
   status.textContent = 'Obtendo localização...';
   navigator.geolocation.getCurrentPosition(pos => {
@@ -273,19 +287,20 @@ function localizar() {
     const you = { lat: pos.coords.latitude, lng: pos.coords.longitude };
     const ordered = [...state.doacoes].sort((a, b) => haversine(you, a) - haversine(you, b));
     renderDoacoes(ordered);
-  }, err => {
+  }, () => {
     status.textContent = 'Não foi possível obter a localização.';
     drawMap(null);
   });
 }
 
+// ----- Assinatura -----
 function openModal() {
-  $('#modalCompra').classList.add('open');
-  $('#modalCompra').setAttribute('aria-hidden', 'false');
+  $('#modalCompra')?.classList.add('open');
+  $('#modalCompra')?.setAttribute('aria-hidden', 'false');
 }
 function closeModal() {
-  $('#modalCompra').classList.remove('open');
-  $('#modalCompra').setAttribute('aria-hidden', 'true');
+  $('#modalCompra')?.classList.remove('open');
+  $('#modalCompra')?.setAttribute('aria-hidden', 'true');
 }
 function confirmarCompra() {
   state.plano = 'plus';
@@ -294,16 +309,15 @@ function confirmarCompra() {
   live('Assinatura confirmada');
   closeModal();
 }
-
 function wirePlanButtons() {
-  $('#btnAssinar').addEventListener('click', openModal);
-  $('#btnAssinarHeader').addEventListener('click', openModal);
-  $('#confirmarCompra').addEventListener('click', confirmarCompra);
-  $('#cancelarCompra').addEventListener('click', closeModal);
+  $('#btnAssinar')?.addEventListener('click', openModal);
+  $('#btnAssinarHeader')?.addEventListener('click', openModal);
+  $('#confirmarCompra')?.addEventListener('click', confirmarCompra);
+  $('#cancelarCompra')?.addEventListener('click', closeModal);
 }
 
+// ----- Inicialização -----
 $('#filtroTexto')?.addEventListener('input', () => renderDoacoes());
-
 $('#formDoacao')?.addEventListener('submit', onSubmitDoacao);
 $('#listaDoacoes')?.addEventListener('click', onClickLista);
 $('#formChat')?.addEventListener('submit', onChatSubmit);
@@ -323,5 +337,6 @@ function init() {
 }
 
 document.addEventListener('DOMContentLoaded', init);
+
 
 
