@@ -38,20 +38,23 @@ const haversine = (a, b) => {
 // ----- Acessibilidade -----
 function applyA11y() {
   const b = document.body;
-  const a = state.a11y;
+  const a = state.a11y || {};
+  
   b.classList.toggle('hc', !!a.contraste);
   b.classList.toggle('lg', !!a.fonte);
   b.classList.toggle('df', !!a.dislexia);
+
   if (a.animacoes) b.setAttribute('data-reduced-motion', 'true'); 
   else b.removeAttribute('data-reduced-motion');
+
   $('#painelA11y')?.classList.toggle('open', !!a.open);
   $('#btnA11y')?.setAttribute('aria-expanded', !!a.open);
 
-  // 🔹 Reaplica o tamanho salvo
-  if (a.fonteCustom) {
-    document.documentElement.style.fontSize = a.fonteCustom + 'px';
-  }
+  // 🔹 Aplica tamanho de fonte salvo
+  if (a.fonteCustom) document.documentElement.style.fontSize = a.fonteCustom + 'px';
+  else document.documentElement.style.fontSize = '';
 }
+
 function saveA11y() {
   localStorage.setItem('a11y', JSON.stringify(state.a11y));
   applyA11y();
@@ -138,7 +141,7 @@ function drawMap(userPos = null) {
   if (!c) return;
   const ctx = c.getContext('2d');
   ctx.clearRect(0, 0, c.width, c.height);
-  
+
   ctx.fillStyle = '#0b1220';
   ctx.fillRect(0, 0, c.width, c.height);
   ctx.strokeStyle = '#233';
@@ -152,7 +155,7 @@ function drawMap(userPos = null) {
 
   const spots = [[100, 80], [320, 160], [220, 260]];
   spots.forEach(([x, y]) => { ctx.beginPath(); ctx.fillStyle = '#22c55e'; ctx.arc(x, y, 8, 0, Math.PI * 2); ctx.fill(); });
- 
+
   if (userPos) {
     ctx.beginPath(); ctx.fillStyle = '#93c5fd'; ctx.arc(420, 60, 10, 0, Math.PI * 2); ctx.fill();
   }
@@ -236,10 +239,10 @@ function onClickLista(e) {
 
   const est = byId(d.estId);
   if (est) est.pontos += 3;
-  
+
   ensureConversation(d.id);
   state.conversas[d.id].push({ quem: 'you', texto: `Olá! Reservei "${d.tipo}". Posso retirar dentro da janela ${d.janela}?`, ts: Date.now() });
-  
+
   setTimeout(() => {
     state.conversas[d.id].push({ quem: 'them', texto: 'Olá! Está reservado no balcão. Traga um documento, por favor.', ts: Date.now() });
     renderChat();
@@ -271,29 +274,38 @@ function wireNav() {
   }));
   $('#btnInicio')?.addEventListener('click', () => $('#hero')?.scrollIntoView({ behavior: 'smooth' }));
 }
-function setupA11y() {
-  $('#btnA11y')?.addEventListener('click', () => { state.a11y.open = !state.a11y.open; saveA11y(); });
-  $('#toggleContraste')?.addEventListener('click', () => { state.a11y.contraste = !state.a11y.contraste; saveA11y(); });
-  $('#toggleFonte')?.addEventListener('click', () => { state.a11y.fonte = !state.a11y.fonte; saveA11y(); });
-  $('#toggleDislexia')?.addEventListener('click', () => { state.a11y.dislexia = !state.a11y.dislexia; saveA11y(); });
-  $('#toggleAnimacoes')?.addEventListener('click', () => { state.a11y.animacoes = !state.a11y.animacoes; saveA11y(); });
-  $('#resetA11y')?.addEventListener('click', () => { state.a11y = {}; saveA11y(); });
 
-  // 🔹 Novos botões A+ / A-
-  $('#aumentarFonte')?.addEventListener('click', () => {
+function setupA11y() {
+  const aumentarFonte = () => {
     const atual = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
     document.documentElement.style.fontSize = (atual + 2) + 'px';
     state.a11y.fonteCustom = atual + 2;
     saveA11y();
-  });
-  $('#diminuirFonte')?.addEventListener('click', () => {
+  };
+  const diminuirFonte = () => {
     const atual = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
     if (atual > 10) {
       document.documentElement.style.fontSize = (atual - 2) + 'px';
       state.a11y.fonteCustom = atual - 2;
       saveA11y();
     }
+  };
+
+  $('#btnA11y')?.addEventListener('click', () => { state.a11y.open = !state.a11y.open; saveA11y(); });
+  $('#toggleContraste')?.addEventListener('click', () => { state.a11y.contraste = !state.a11y.contraste; saveA11y(); });
+  $('#toggleFonte')?.addEventListener('click', () => { state.a11y.fonte = !state.a11y.fonte; saveA11y(); });
+  $('#toggleDislexia')?.addEventListener('click', () => { state.a11y.dislexia = !state.a11y.dislexia; saveA11y(); });
+  $('#toggleAnimacoes')?.addEventListener('click', () => { state.a11y.animacoes = !state.a11y.animacoes; saveA11y(); });
+  $('#resetA11y')?.addEventListener('click', () => {
+    state.a11y = {};
+    document.body.classList.remove('hc', 'lg', 'df');
+    document.documentElement.style.fontSize = '';
+    document.body.removeAttribute('data-reduced-motion');
+    saveA11y();
   });
+
+  $('#aumentarFonte')?.addEventListener('click', aumentarFonte);
+  $('#diminuirFonte')?.addEventListener('click', diminuirFonte);
 
   applyA11y();
 }
