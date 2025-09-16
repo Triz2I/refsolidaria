@@ -1,7 +1,7 @@
 :root {
   --bg: #fffdf8; /* fundo claro e acolhedor */
-  --surface: #fff7ed; /* tom creme/suave */
-  --text: #2c2c2c; /* texto escuro */
+  --surface: #f8ebda; /* tom creme/suave */
+  --text: #381704; /* texto escuro */
   --muted: #7a7a7a; /* texto secundário */
   --primary: #d97706; /* dourado-alaranjado (toque sofisticado) */
   --primary-700: #b45309; /* dourado queimado */
