@@ -18,7 +18,7 @@ const state = {
   ],
   reservas: [],
   publicadas: [],
-  conversas: {}, // {doacaoId: [{quem:'you'|'them', texto, ts}]}
+  conversas: {},
   user: { id: 'beneficiario-demo', nome: 'Você' },
   plano: localStorage.getItem('plano') || 'free',
   a11y: JSON.parse(localStorage.getItem('a11y') || '{}')
@@ -42,9 +42,15 @@ function applyA11y() {
   b.classList.toggle('hc', !!a.contraste);
   b.classList.toggle('lg', !!a.fonte);
   b.classList.toggle('df', !!a.dislexia);
-  if (a.animacoes) b.setAttribute('data-reduced-motion', 'true'); else b.removeAttribute('data-reduced-motion');
+  if (a.animacoes) b.setAttribute('data-reduced-motion', 'true'); 
+  else b.removeAttribute('data-reduced-motion');
   $('#painelA11y')?.classList.toggle('open', !!a.open);
   $('#btnA11y')?.setAttribute('aria-expanded', !!a.open);
+
+  // 🔹 Reaplica o tamanho salvo
+  if (a.fonteCustom) {
+    document.documentElement.style.fontSize = a.fonteCustom + 'px';
+  }
 }
 function saveA11y() {
   localStorage.setItem('a11y', JSON.stringify(state.a11y));
@@ -272,6 +278,23 @@ function setupA11y() {
   $('#toggleDislexia')?.addEventListener('click', () => { state.a11y.dislexia = !state.a11y.dislexia; saveA11y(); });
   $('#toggleAnimacoes')?.addEventListener('click', () => { state.a11y.animacoes = !state.a11y.animacoes; saveA11y(); });
   $('#resetA11y')?.addEventListener('click', () => { state.a11y = {}; saveA11y(); });
+
+  // 🔹 Novos botões A+ / A-
+  $('#aumentarFonte')?.addEventListener('click', () => {
+    const atual = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+    document.documentElement.style.fontSize = (atual + 2) + 'px';
+    state.a11y.fonteCustom = atual + 2;
+    saveA11y();
+  });
+  $('#diminuirFonte')?.addEventListener('click', () => {
+    const atual = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+    if (atual > 10) {
+      document.documentElement.style.fontSize = (atual - 2) + 'px';
+      state.a11y.fonteCustom = atual - 2;
+      saveA11y();
+    }
+  });
+
   applyA11y();
 }
 
@@ -325,18 +348,4 @@ $('#selConversa')?.addEventListener('change', renderChat);
 $('#btnLocalizar')?.addEventListener('click', localizar);
 
 function init() {
-  wireNav();
-  setupA11y();
-  wirePlanButtons();
-  drawMap(null);
-  renderStats();
-  renderDoacoes();
-  renderHistorico();
-  renderRanking();
-  renderConversations();
-}
-
-document.addEventListener('DOMContentLoaded', init);
-
-
-
+  wireNav
