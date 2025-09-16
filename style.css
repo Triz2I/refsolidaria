@@ -1,30 +1,41 @@
+/* =========================================
+   Paleta de cores - tema claro e contraste
+   ========================================= */
 :root {
-  --bg: #fffdf8;          /* fundo claro e acolhedor */
-  --surface: #f8ebda;     /* tom creme/suave */
-  --text: #381704;        /* texto escuro */
-  --muted: #7a7a7a;       /* texto secundário */
-  --primary: #d97706;     /* dourado-alaranjado */
-  --primary-700: #b45309; /* dourado queimado */
-  --secondary: #9a3412;   /* vinho suave */
-  --ring: #f59e0b;        /* foco */
-  --danger: #dc2626;
-  --shadow: 0 10px 30px rgba(0, 0, 0, .15);
+  --bg: #fffaf3;           /* fundo claro e acolhedor */
+  --surface: #fff1e0;      /* tom creme/suave para cards e seções */
+  --text: #3b1f0b;         /* texto principal escuro */
+  --muted: #7a5c4f;        /* texto secundário */
+  --primary: #f97316;      /* laranja/apetite */
+  --primary-700: #d97706;  /* laranja queimado */
+  --secondary: #dc2626;    /* vermelho tomate */
+  --ring: #fb923c;         /* foco / destaque */
+  --danger: #b91c1c;       /* alerta / erro */
+  --success: #16a34a;      /* positivo / confirmação */
+  --shadow: 0 10px 30px rgba(0,0,0,.15);
 }
 
+/* Modo contraste / escuro */
 .hc {
-  --bg: #0d0d0d;
-  --surface: #161616;
-  --text: #fdfdfd;
-  --muted: #f0d8c0;
-  --primary: #ffb300;
-  --primary-700: #ff9800;
-  --secondary: #ff5722;
+  --bg: #1b1b1b;
+  --surface: #2a2a2a;
+  --text: #fdf4e7;
+  --muted: #d9bfa3;
+  --primary: #ff8c42;
+  --primary-700: #ff6f00;
+  --secondary: #ff3d00;
+  --ring: #ffa94d;
+  --success: #4ade80;
 }
 
+/* Tipografia legível */
 .df {
   font-family: "Atkinson Hyperlegible", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
+/* =========================================
+   Estrutura geral
+   ========================================= */
 html {
   transform-origin: top left;
   transition: transform 0.2s ease;
@@ -49,7 +60,9 @@ body {
 .grid2 { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; align-items: start; }
 .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 
-/* Topbar */
+/* =========================================
+   Topbar
+   ========================================= */
 .topbar {
   position: sticky; top: 0; z-index: 50;
   background: rgba(255,255,255,.85);
@@ -82,7 +95,9 @@ body {
   font-weight: 600;
 }
 
-/* Botões gerais */
+/* =========================================
+   Botões
+   ========================================= */
 .btn {
   appearance: none; border: 1px solid #e0d6c6;
   background: var(--surface); color: var(--text);
@@ -105,83 +120,113 @@ body {
   border-radius: 10px;
 }
 
-/* Skip link */
+/* =========================================
+   Skip link
+   ========================================= */
 .skip-link { position:absolute; left:-10000px; top:auto; width:1px; height:1px; overflow:hidden; }
 .skip-link:focus {
   position: static; width: auto; height: auto; margin: 8px;
   display: inline-block; background: var(--secondary); color:#fff; padding: 8px 10px; border-radius: 8px;
 }
 
-/* Painel de acessibilidade */
+/* =========================================
+   Painel de acessibilidade
+   ========================================= */
 .a11y-panel { display:none; border-bottom: 1px solid #ddd; background:#fdf6ec; }
 .a11y-panel.open { display:block; }
 .a11y-controls { display:flex; flex-wrap:wrap; gap:8px; }
 
-/* Hero */
+/* =========================================
+   Hero
+   ========================================= */
 .hero { padding: 56px 0 24px; background: radial-gradient(800px 400px at 80% 10%, #fff2d9 0, transparent 60%); }
 .lead { color: var(--muted); font-size: 1.125rem; }
 
-/* Cards */
+/* =========================================
+   Cards
+   ========================================= */
 .card { background: linear-gradient(180deg, #fff9f2, #fff3e4); border: 1px solid #e0d6c6; border-radius: 16px; padding: 16px; box-shadow: var(--shadow); }
 .card.highlight { border:2px solid var(--primary); }
 
-/* Estatísticas */
+/* =========================================
+   Estatísticas
+   ========================================= */
 .stats { display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; }
 .stat { text-align:center; background:#fff8ef; padding:24px; border-radius:16px; border:1px solid #eadbc8; }
 .stat span { font-size: 2rem; font-weight: 800; display:block; }
 .stat small { color: var(--muted); }
 
-/* Seções */
+/* =========================================
+   Seções
+   ========================================= */
 .section { padding: 40px 0; }
 .h4 { font-size: 1.25rem; margin: 0 0 8px; }
 .h5 { font-size: 1.1rem; margin: 0 0 8px; }
 
-/* Formulários */
+/* =========================================
+   Formulários
+   ========================================= */
 .form label { display:flex; flex-direction:column; gap:6px; font-weight:600; }
 .form input, .form select { background:#fff8f0; border:1px solid #e0d6c6; color:var(--text); padding:10px 12px; border-radius:10px; }
 .form input:focus { outline:3px solid var(--ring); border-color:transparent; }
 .form-actions { display:flex; gap:10px; align-items:center; margin-top:12px; }
 .hint, .muted { color: var(--muted); }
 
-/* Listas e filtros */
+/* =========================================
+   Listas e filtros
+   ========================================= */
 .filters { display:flex; gap:10px; align-items:center; margin-bottom:12px; }
 .list { list-style:none; padding:0; margin:0; display:grid; gap:10px; }
 .list li { border:1px solid #eadbc8; border-radius:12px; padding:12px; display:grid; gap:6px; background: var(--surface); color: var(--text); }
 .list .row { display:flex; gap:8px; align-items:center; justify-content:space-between; flex-wrap:wrap; line-height:1.4; }
 .badge { display:inline-block; padding:2px 8px; border-radius:999px; background:#fff3e4; border:1px solid #e0d6c6; color:#92400e; font-size:.8rem; }
 
-/* Chat */
+/* =========================================
+   Chat
+   ========================================= */
 .chat { background:#fff8ef; border:1px solid #eadbc8; border-radius:12px; height:260px; overflow:auto; padding:10px; display:flex; flex-direction:column; gap:8px; }
 .msg { max-width:80%; padding:8px 10px; border-radius:12px; }
 .msg.you { align-self:flex-end; background: #f3e8ff; }
 .msg.them { align-self:flex-start; background: #fee2e2; }
 .chat-input { margin-top:10px; display:flex; gap:8px; }
 
-/* Ranking */
+/* =========================================
+   Ranking
+   ========================================= */
 .ranking { counter-reset: rk; display:grid; gap:10px; }
 .ranking li { counter-increment: rk; padding:12px; border:1px solid #eadbc8; border-radius:12px; display:flex; gap:8px; align-items:center; justify-content:space-between; background: var(--surface); color: var(--text);}
 .ranking li::before { content: counter(rk) "."; color: var(--muted); margin-right:8px; }
 
-/* Footer */
+/* =========================================
+   Footer
+   ========================================= */
 .footer { padding: 24px 0; border-top:1px solid #e0d6c6; background:#fff3e4; }
 .footer a { color: var(--muted); text-decoration:none; }
 .footer a:hover { text-decoration:underline; }
 
-/* Modal */
+/* =========================================
+   Modal
+   ========================================= */
 .modal { position: fixed; inset: 0; display:none; align-items:center; justify-content:center; background: rgba(0,0,0,.6); }
 .modal.open { display:flex; }
 .modal-content { background:#fff8f0; border:1px solid #e0d6c6; border-radius:16px; padding:20px; width:min(480px, 92%); box-shadow: var(--shadow); }
 .modal-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:12px; }
 
-/* Media Queries */
+/* =========================================
+   Media Queries
+   ========================================= */
 @media (max-width: 900px) {
   .grid2 { grid-template-columns: 1fr; }
   .grid3 { grid-template-columns: 1fr; }
   .topbar .container { flex-direction: column; gap: 8px; }
 }
 
+/* =========================================
+   Acessibilidade
+   ========================================= */
 :focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; border-radius: 8px; }
 
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
 }
+
