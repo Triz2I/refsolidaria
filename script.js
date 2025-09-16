@@ -348,4 +348,14 @@ $('#selConversa')?.addEventListener('change', renderChat);
 $('#btnLocalizar')?.addEventListener('click', localizar);
 
 function init() {
-  wireNav
+  wireNav();
+  setupA11y();
+  wirePlanButtons();
+  renderStats();
+  renderDoacoes();
+  renderHistorico();
+  renderRanking();
+  renderConversations();
+}
+
+document.addEventListener('DOMContentLoaded', init);
