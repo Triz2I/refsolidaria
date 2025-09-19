@@ -230,3 +230,22 @@ body {
   * { animation: none !important; transition: none !important; }
 }
 
+/* =========================================
+   Animação para estrelas de avaliação
+   ========================================= */
+.rating__star {
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+  width: 2em;
+  height: 2em;
+}
+
+.rating__star-ring,
+.rating__star-fill,
+.rating__star-line,
+.rating__star-stroke {
+  animation-duration: 1s;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
+}
