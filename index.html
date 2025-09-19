@@ -8,6 +8,28 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* =========================================
+       Animação para estrelas de avaliação
+       ========================================= */
+    .rating__star {
+      display: block;
+      overflow: visible;
+      pointer-events: none;
+      width: 2em;
+      height: 2em;
+    }
+
+    .rating__star-ring,
+    .rating__star-fill,
+    .rating__star-line,
+    .rating__star-stroke {
+      animation-duration: 1s;
+      animation-timing-function: ease-in-out;
+      animation-fill-mode: forwards;
+    }
+  </style>
 </head>
 <body>
   <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -187,7 +209,6 @@
       </div>
     </section>
 
-    
     <section id="planos" class="section" aria-labelledby="ttlPlanos">
       <div class="container">
         <h2 id="ttlPlanos">Plano para estabelecimentos</h2>
